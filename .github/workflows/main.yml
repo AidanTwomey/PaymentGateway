@@ -22,13 +22,13 @@ jobs:
           creds: ${{secrets.AZURE_CREDENTIALS}}
 
       - uses: azure/docker-login@v1
-          with:
-            login-server: aidantpaymentgateway.azurecr.io
-            username: ${{ secrets.REGISTRY_USERNAME }}
-            password: ${{ secrets.REGISTRY_PASSWORD }}
-        - run: |
-            docker build . -t aidantpaymentgateway.azurecr.io/payments-gateway:${{ github.sha }}
-            docker push aidantpaymentgateway.azurecr.io/payments-gateway:${{ github.sha }}
+        with:
+          login-server: aidantpaymentgateway.azurecr.io
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+      - run: |
+          docker build . -t aidantpaymentgateway.azurecr.io/payments-gateway:${{ github.sha }}
+          docker push aidantpaymentgateway.azurecr.io/payments-gateway:${{ github.sha }}
 
       - name: Deploy to Azure Container Instances
         uses: Azure/aci-deploy@v1
