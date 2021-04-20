@@ -1,40 +1,46 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using AidanTwomey.PaymentGateway.API.Model;
+using AidanTwomey.PaymentsGateway.API.Validation;
+using AidanTwomey.PaymentsGateway.API.Command;
+using Microsoft.AspNetCore.Http;
+using AidanTwomey.PaymentsGateway.API.Payments;
 
 namespace AidanTwomey.Paymentsgateway.API.Controllers
 {
-
     // [Consumes("application/json")]
     // [Produces("application/json")]
-    // [ApiExplorerSettings(GroupName = "Category")]
     public class PaymentsController
     {
-        // readonly ICommandHandler<CreateCategory, Guid> commandHandler;
+        private readonly IPaymentValidator paymentValidator;
+        private readonly ICardStorageCommand cardStorageCommand;
+        private readonly IPaymentService paymentService;
 
-        // public AddMenuCategoryController(ICommandHandler<CreateCategory, Guid> commandHandler)
-        // {
-        //     this.commandHandler = commandHandler;
-        // }
+        public PaymentsController(
+            IPaymentValidator paymentValidator, 
+            ICardStorageCommand cardStorageCommand,
+            IPaymentService paymentService)
+        {
+            this.paymentValidator = paymentValidator;
+            this.cardStorageCommand = cardStorageCommand;
+            this.paymentService = paymentService;
+        }
 
         [HttpPost("v1/payments")]
         // [Authorize]
-        // [ProducesResponseType(typeof(ResourceCreatedResponse), StatusCodes.Status201Created)]
-        public async Task<IActionResult> MakePayment([FromBody]MakePaymentRequest body)
+        [ProducesResponseType(typeof(ResourceCreatedResponse), StatusCodes.Status201Created)]
+        public async Task<IActionResult> MakePayment([FromBody] MakePaymentRequest paymentRequest)
         {
-            // NOTE: Please ensure the API returns the response codes annotated above
+            var validation = this.paymentValidator.Validate(paymentRequest);
 
-            // var categoryId = await commandHandler.HandleAsync(
-            //     new CreateCategory(
-            //         correlationId: GetCorrelationId(),
-            //         menuId: id,
-            //         name: body.Name,
-            //         description: body.Description
-            //     )
-            // );
+            if (validation is InvalidPayment)
+                return new BadRequestResult();
 
-            // return StatusCode(StatusCodes.Status201Created, new ResourceCreatedResponse(categoryId));
-            return new StatusCodeResult(201);
+            await cardStorageCommand.StoreCardAsync();
+
+            var response = await paymentService.MakePayment(validation.ToPayment());
+
+            return new CreatedResult(response.Id.ToString(), new ResourceCreatedResponse());
         }
     }
 }

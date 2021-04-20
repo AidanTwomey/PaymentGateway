@@ -21,15 +21,16 @@ namespace AidanTwomey.PaymentGateway.API.ComponentTests.Features
         */
 
         [Scenario]
-        [CustomInlineAutoData("Admin")]
+        [CustomInlineAutoData("Admin", "4716144209705113")]
         // [CustomInlineAutoData("Employee")]
-        public void CreateCategoryShouldSucceed(string role, CreatePaymentFixture fixture)
+        public void CreateCategoryShouldSucceed(string role, string card, CreatePaymentFixture fixture)
         {
             $"Given the user is authenticated and has the {role} role".x(() => fixture.GivenTheUserIsAuthenticatedAndHasRole(role));
             // "And an existing menu".x(fixture.GivenAnExistingMenu);
             // "And the menu belongs to the user restaurant".x(fixture.GivenTheMenuBelongsToUserRestaurant);
             // "And the category being created does not exist in the menu".x(fixture.GivenTheCategoryDoesNotExist);
             "When a new payment is submitted".x(fixture.WhenThePaymentIsSubmitted);
+            "And the payment has card number {card}".x(() => fixture.AndTheCardNumberIs(card));
             "Then a successful response is returned".x(fixture.ThenASuccessfulResponseIsReturned);
             // "And the menu is loaded from the storage".x(fixture.ThenMenuIsLoadedFromStorage);
             // "And the id of the new category is returned".x(fixture.ThenTheResourceCreatedResponseIsReturned);

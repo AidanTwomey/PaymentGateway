@@ -10,6 +10,7 @@ using NSubstitute;
 using Shouldly;
 using AidanTwomey.PaymentsGateway.API;
 using AidanTwomey.PaymentGateway.API.Model;
+using AidanTwomey.PaymentsGateway.API.Validation;
 
 namespace AidanTwomey.PaymentGateway.API.ComponentTests.Fixtures
 {
@@ -17,6 +18,8 @@ namespace AidanTwomey.PaymentGateway.API.ComponentTests.Fixtures
     {
         // readonly Domain.Menu existingMenu;
         readonly Guid userRestaurantId = Guid.Parse("2AA18D86-1A4C-4305-95A7-912C7C0FC5E1");
+        private string cardNumber;
+
         // readonly CreateCategoryRequest newCategory;
 
         // IMenuRepository repository;
@@ -39,6 +42,7 @@ namespace AidanTwomey.PaymentGateway.API.ComponentTests.Fixtures
 
             // collection.AddTransient(IoC => repository);
             // collection.AddTransient(IoC => applicationEventPublisher);
+            collection.AddTransient(IoC => Substitute.For<IPaymentValidator>());
         }
 
         /****** GIVEN ******************************************************/
@@ -96,12 +100,17 @@ namespace AidanTwomey.PaymentGateway.API.ComponentTests.Fixtures
 
         internal async Task WhenThePaymentIsSubmitted()
         {
-            await CreatePayment(new MakePaymentRequest());
+            await CreatePayment(new MakePaymentRequest(){Card = new(cardNumber, 12,2021)});
         }
 
         public async Task<HttpResponseMessage> CreatePayment(MakePaymentRequest payment)
         {
             return await SendAsync(HttpMethod.Post, $"/v1/payments", payment);
+        }
+
+        internal void AndTheCardNumberIs(string card)
+        {
+            this.cardNumber = card;
         }
 
 

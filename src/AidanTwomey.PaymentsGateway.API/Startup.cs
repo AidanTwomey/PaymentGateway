@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AidanTwomey.PaymentsGateway.API.Command;
+using AidanTwomey.PaymentsGateway.API.Validation;
+using AidanTwomey.PaymentsGateway.API.Payments;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -24,6 +27,10 @@ namespace AidanTwomey.PaymentsGateway.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.AddSingleton<IPaymentValidator, PaymentValidator>();
+            services.AddSingleton<ICardStorageCommand, CardStorageCommand>();
+            services.AddSingleton<IPaymentService, PaymentService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
