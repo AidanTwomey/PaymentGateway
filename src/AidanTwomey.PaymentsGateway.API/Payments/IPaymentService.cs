@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 
 namespace AidanTwomey.PaymentsGateway.API.Payments
@@ -11,7 +12,7 @@ namespace AidanTwomey.PaymentsGateway.API.Payments
     {
         public Task<PaymentResponse> MakePayment(Payment request)
         {
-            return Task.FromResult(new PaymentResponse());
+            return Task.FromResult(new PaymentResponse(Guid.NewGuid()));
         }
     }
 }
