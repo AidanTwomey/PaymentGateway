@@ -38,3 +38,4 @@ jobs:
           image: aidantpaymentgateway.azurecr.io/payments-gateway:${{ github.sha }}
           registry-username: ${{ secrets.REGISTRY_USERNAME }}
           registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+          location: 'north europe'
