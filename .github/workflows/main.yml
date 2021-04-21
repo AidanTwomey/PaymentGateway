@@ -21,24 +21,34 @@ jobs:
         with:
           creds: ${{secrets.AZURE_CREDENTIALS}}
 
-      - uses: azure/docker-login@v1
+      - name: Azure CLI script
+        uses: azure/CLI@v1
         with:
-          login-server: aidantpaymentgateway.azurecr.io
-          username: ${{ secrets.REGISTRY_USERNAME }}
-          password: ${{ secrets.REGISTRY_PASSWORD }}
-      - run: |
-          docker build . -t aidantpaymentgateway.azurecr.io/payments-gateway:${{ github.sha }}
-          docker push aidantpaymentgateway.azurecr.io/payments-gateway:${{ github.sha }}
+          azcliversion: 2.0.72
+          inlineScript: |
+            az acr login --name aidantpaymentgateway
+            docker build . -t aidantpaymentgateway.azurecr.io/payments-gateway:${{ github.sha }}
+            docker push aidantpaymentgateway.azurecr.io/payments-gateway:${{ github.sha }}
+            az container create --resource-group payment-gateway --name payment-gateway-container --image aidantpaymentgateway.azurecr.io/payments-gateway:${{ github.sha }} --cpu 1 --memory 1.5 --registry-login-server ${{ secrets.REGISTRY_LOGIN_SERVER }} --registry-username ${{ secrets.REGISTRY_USERNAME }} --registry-password ${{ secrets.REGISTRY_PASSWORD }} --dns-name-label aidant-payment-gateway --ports 80 --restart-policy OnFailure
 
-      - name: Deploy to Azure Container Instances
-        uses: Azure/aci-deploy@v1
-        with:
-          resource-group: payment-gateway
-          dns-name-label: aidant-payment-gateway
-          image: aidantpaymentgateway.azurecr.io/payments-gateway:${{ github.sha }}
-          registry-username: ${{ secrets.REGISTRY_USERNAME }}
-          registry-password: ${{ secrets.REGISTRY_PASSWORD }}
-          registry-login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
-          name: payment-gateway-container
-          location: 'north europe'
-          restart-policy: OnFailure
+      # - uses: azure/docker-login@v1
+      #   with:
+      #     login-server: aidantpaymentgateway.azurecr.io
+      #     username: ${{ secrets.REGISTRY_USERNAME }}
+      #     password: ${{ secrets.REGISTRY_PASSWORD }}
+      # - run: |
+      #     docker build . -t aidantpaymentgateway.azurecr.io/payments-gateway:${{ github.sha }}
+      #     docker push aidantpaymentgateway.azurecr.io/payments-gateway:${{ github.sha }}
+
+      # - name: Deploy to Azure Container Instances
+      #   uses: Azure/aci-deploy@v1
+      #   with:
+      #     resource-group: payment-gateway
+      #     dns-name-label: aidant-payment-gateway
+      #     image: aidantpaymentgateway.azurecr.io/payments-gateway:${{ github.sha }}
+      #     registry-username: ${{ secrets.REGISTRY_USERNAME }}
+      #     registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+      #     registry-login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+      #     name: payment-gateway-container
+      #     location: 'north europe'
+      #     restart-policy: OnFailure
