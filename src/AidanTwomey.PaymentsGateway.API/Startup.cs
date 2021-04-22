@@ -1,16 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AidanTwomey.PaymentsGateway.API.Command;
 using AidanTwomey.PaymentsGateway.API.Validation;
 using AidanTwomey.PaymentsGateway.API.Payments;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Runtime.Caching;
 
 namespace AidanTwomey.PaymentsGateway.API
 {
@@ -28,8 +24,22 @@ namespace AidanTwomey.PaymentsGateway.API
         {
             services.AddControllers();
 
+            
+            // services.AddAuthentication(options =>
+            // {
+            //     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            //     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            //     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            // }).AddScheme()
+            // .AddJwtBearer(jwt =>
+            // {
+            //     jwt.Audience = "identity.aidant-payment-gateway";
+            //     jwt.Authority = "https://identity.aidant-payment-gateway"; 
+            // });
+
+            services.AddSingleton<ObjectCache>(_ => new MemoryCache("card_store"));
             services.AddSingleton<IPaymentValidator, PaymentValidator>();
-            services.AddSingleton<ICardStorageCommand, CardStorageCommand>();
+            services.AddSingleton<ICardStorageCommand, InMemoryCardStorageCommand>();
             services.AddSingleton<IPaymentService, PaymentService>();
         }
 
@@ -51,7 +61,9 @@ namespace AidanTwomey.PaymentsGateway.API
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            // app.UseAuthentication();
+            // app.UseAuthorization();
+
 
             app.UseEndpoints(endpoints =>
             {

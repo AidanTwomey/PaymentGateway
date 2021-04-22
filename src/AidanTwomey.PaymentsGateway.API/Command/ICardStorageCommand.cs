@@ -1,17 +1,10 @@
 using System.Threading.Tasks;
+using AidanTwomey.PaymentGateway.API.Model;
 
 namespace AidanTwomey.PaymentsGateway.API.Command
 {
     public interface ICardStorageCommand
     {
-         Task StoreCardAsync();
-    }
-
-    public class CardStorageCommand : ICardStorageCommand
-    {
-        public Task StoreCardAsync()
-        {
-            return Task.CompletedTask;
-        }
+         Task StoreCardAsync(Card card);
     }
 }

@@ -36,7 +36,7 @@ namespace AidanTwomey.Paymentsgateway.API.Controllers
             if (validation is InvalidPayment)
                 return new BadRequestResult();
 
-            await cardStorageCommand.StoreCardAsync();
+            await cardStorageCommand.StoreCardAsync(paymentRequest.Card);
 
             var response = await paymentService.MakePayment(validation.ToPayment());
 

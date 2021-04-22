@@ -4,7 +4,7 @@ WORKDIR /app
 
 # Copy everything else and build
 COPY ./ ./
-# RUN dotnet test
+RUN dotnet test
 RUN dotnet publish -c Release -o out src/AidanTwomey.PaymentsGateway.API/AidanTwomey.PaymentsGateway.API.csproj
 #list files copied to output
 RUN find
