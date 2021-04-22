@@ -5,6 +5,7 @@ using AidanTwomey.PaymentsGateway.API.Validation;
 using AidanTwomey.PaymentsGateway.API.Command;
 using Microsoft.AspNetCore.Http;
 using AidanTwomey.PaymentsGateway.API.Payments;
+using System;
 
 namespace AidanTwomey.Paymentsgateway.API.Controllers
 {
@@ -13,16 +14,16 @@ namespace AidanTwomey.Paymentsgateway.API.Controllers
     public class PaymentsController
     {
         private readonly IPaymentValidator paymentValidator;
-        private readonly ICardStorageCommand cardStorageCommand;
+        private readonly IStorePaymentCommand storePaymentCommand;
         private readonly IPaymentService paymentService;
 
         public PaymentsController(
             IPaymentValidator paymentValidator, 
-            ICardStorageCommand cardStorageCommand,
+            IStorePaymentCommand cardStorageCommand,
             IPaymentService paymentService)
         {
             this.paymentValidator = paymentValidator;
-            this.cardStorageCommand = cardStorageCommand;
+            this.storePaymentCommand = cardStorageCommand;
             this.paymentService = paymentService;
         }
 
@@ -36,9 +37,15 @@ namespace AidanTwomey.Paymentsgateway.API.Controllers
             if (validation is InvalidPayment)
                 return new BadRequestResult();
 
-            await cardStorageCommand.StoreCardAsync(paymentRequest.Card);
-
             var response = await paymentService.MakePayment(validation.ToPayment());
+
+            await storePaymentCommand.StorePaymentAsync(
+                response.Id, 
+                new PaymentTransaction(
+                    paymentRequest.Card, 
+                    paymentRequest.Amount, 
+                    DateTime.Now, 
+                    response is SuccessfulPaymentResponse));
 
             return new CreatedResult(response.Id.ToString(), new ResourceCreatedResponse());
         }

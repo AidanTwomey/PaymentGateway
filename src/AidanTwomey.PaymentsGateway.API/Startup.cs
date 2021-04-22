@@ -37,9 +37,9 @@ namespace AidanTwomey.PaymentsGateway.API
             //     jwt.Authority = "https://identity.aidant-payment-gateway"; 
             // });
 
-            services.AddSingleton<ObjectCache>(_ => new MemoryCache("card_store"));
+            services.AddSingleton<ObjectCache>(_ => new MemoryCache("payment_store"));
             services.AddSingleton<IPaymentValidator, PaymentValidator>();
-            services.AddSingleton<ICardStorageCommand, InMemoryCardStorageCommand>();
+            services.AddSingleton<IStorePaymentCommand, InMemoryStorePaymentCommand>();
             services.AddSingleton<IPaymentService, PaymentService>();
         }
 

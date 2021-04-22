@@ -12,7 +12,7 @@ namespace AidanTwomey.PaymentsGateway.API.Payments
     {
         public Task<PaymentResponse> MakePayment(Payment request)
         {
-            return Task.FromResult(new PaymentResponse(Guid.NewGuid()));
+            return Task.FromResult(new SuccessfulPaymentResponse(Guid.NewGuid()) as PaymentResponse);
         }
     }
 }

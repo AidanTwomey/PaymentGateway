@@ -5,19 +5,19 @@ using AidanTwomey.PaymentGateway.API.Model;
 
 namespace AidanTwomey.PaymentsGateway.API.Command
 {
-    public class InMemoryCardStorageCommand : ICardStorageCommand
+    public class InMemoryStorePaymentCommand : IStorePaymentCommand
     {
         private readonly ObjectCache cache;
         private readonly CacheItemPolicy cachePolicy = new CacheItemPolicy(){SlidingExpiration = new TimeSpan(1,0,0)};
 
-        public InMemoryCardStorageCommand(ObjectCache cache)
+        public InMemoryStorePaymentCommand(ObjectCache cache)
         {
             this.cache = cache;
         }
 
-        public Task StoreCardAsync(Card card)
+        public Task StorePaymentAsync(Guid id, PaymentTransaction payment)
         {
-            cache.Add(card.Number, card, cachePolicy);
+            cache.Add(id.ToString(), payment, cachePolicy);
 
             return Task.CompletedTask;
         }
