@@ -1,6 +1,6 @@
 # Payment Gateway
 
-![CI build](https://https://github.com/AidanTwomey/PaymentGateway/blob/main/.github/workflows/main.yml/badge.svg)
+![CI build](https://github.com/AidanTwomey/PaymentGateway/actions/workflows/main.yml/badge.svg)
 
 An API for demonstrating payments in dotnet core.
 

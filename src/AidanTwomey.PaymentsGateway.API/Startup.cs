@@ -27,7 +27,7 @@ namespace AidanTwomey.PaymentsGateway.API
         {
             services.AddControllers();
 
-            
+
             // services.AddAuthentication(options =>
             // {
             //     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -45,6 +45,8 @@ namespace AidanTwomey.PaymentsGateway.API
             services.AddSingleton<IStorePaymentCommand, InMemoryStorePaymentCommand>();
             services.AddSingleton<IPaymentTransactionQuery, InMemoryPaymentTransactionQuery>();
             services.AddSingleton<IPaymentService, PaymentService>();
+
+            services.AddSwaggerGen();
 
             services
                 .AddRefitClient<IBank>()
@@ -73,6 +75,12 @@ namespace AidanTwomey.PaymentsGateway.API
             // app.UseAuthentication();
             // app.UseAuthorization();
 
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Payment Gateway API V1");
+            });
 
             app.UseEndpoints(endpoints =>
             {
