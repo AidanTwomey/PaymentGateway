@@ -2,7 +2,7 @@
 
 ![CI build](https://github.com/AidanTwomey/PaymentGateway/actions/workflows/main.yml/badge.svg)
 
-An API for demonstrating payments in dotnet core.
+An API for demonstrating payments in dotnet core. See the Swagger endpoint at `/swagger` for full specification.
 
 ## Deployed Version
 
