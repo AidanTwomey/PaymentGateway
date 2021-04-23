@@ -12,6 +12,6 @@ namespace AidanTwomey.PaymentGateway.API.Model
         public string Number { get; init;}
         public int ExpiryMonth { get; init;}
         public int ExpiryYear { get; init;}
-        public string CVV { get;init;}
+        public string Cvv { get;init;}
     }
 }

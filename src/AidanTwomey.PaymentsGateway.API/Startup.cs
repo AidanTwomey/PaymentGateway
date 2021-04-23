@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Runtime.Caching;
+using AidanTwomey.PaymentsGateway.API.Query;
 
 namespace AidanTwomey.PaymentsGateway.API
 {
@@ -40,6 +41,7 @@ namespace AidanTwomey.PaymentsGateway.API
             services.AddSingleton<ObjectCache>(_ => new MemoryCache("payment_store"));
             services.AddSingleton<IPaymentValidator, PaymentValidator>();
             services.AddSingleton<IStorePaymentCommand, InMemoryStorePaymentCommand>();
+            services.AddSingleton<IPaymentTransactionQuery, InMemoryPaymentTransactionQuery>();
             services.AddSingleton<IPaymentService, PaymentService>();
         }
 

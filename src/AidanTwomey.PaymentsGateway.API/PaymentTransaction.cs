@@ -1,7 +1,7 @@
 using System;
 using AidanTwomey.PaymentGateway.API.Model;
 
-namespace AidanTwomey.PaymentsGateway.API.Command
+namespace AidanTwomey.PaymentsGateway.Domain
 {
     public record PaymentTransaction
     {

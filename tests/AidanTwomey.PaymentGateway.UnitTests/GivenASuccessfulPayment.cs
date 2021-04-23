@@ -3,18 +3,18 @@ using System.Runtime.Caching;
 using System.Threading.Tasks;
 using AidanTwomey.PaymentGateway.API.Model;
 using AidanTwomey.PaymentsGateway.API.Command;
+using AidanTwomey.PaymentsGateway.Domain;
 using NSubstitute;
 using Xunit;
 
 namespace AidanTwomey.PaymentGateway.UnitTests
 {
-    public class GivenAValidCreditCard
+    public class GivenASuccessfulPayment
     {
         private const string ValidCardNumber = "4716887383567911";
         
         [Fact]
-        public async Task AndAnInMemoryCardStore_When_StoreCardAsync_Then_AddToCache(
-        )
+        public async Task AndAnInMemoryPaymentStore_When_StorePaymentAsync_Then_AddToCache()
         {
             const string transactionId = "d07840a0-279e-433f-a8b0-7760b5929153";
 

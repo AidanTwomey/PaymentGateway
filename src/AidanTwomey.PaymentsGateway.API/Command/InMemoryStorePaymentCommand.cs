@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.Caching;
 using System.Threading.Tasks;
-using AidanTwomey.PaymentGateway.API.Model;
+using AidanTwomey.PaymentsGateway.Domain;
 
 namespace AidanTwomey.PaymentsGateway.API.Command
 {
