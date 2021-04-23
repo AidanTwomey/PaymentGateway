@@ -21,7 +21,7 @@ namespace AidanTwomey.Paymentsgateway.API.Controllers
         private readonly IPaymentService paymentService;
 
         public PaymentsController(
-            IPaymentValidator paymentValidator, 
+            IPaymentValidator paymentValidator,
             IStorePaymentCommand cardStorageCommand,
             IPaymentTransactionQuery transactionQuery,
             IPaymentService paymentService)
@@ -42,25 +42,30 @@ namespace AidanTwomey.Paymentsgateway.API.Controllers
             if (validation is InvalidPayment)
                 return new BadRequestResult();
 
-            var response = await paymentService.MakePayment(validation.ToPayment());
+            var payment = await paymentService.MakePayment(validation.ToPayment());
 
-            await storePaymentCommand.StorePaymentAsync(
-                response.Id, 
-                new PaymentTransaction(
-                    paymentRequest.Card, 
-                    paymentRequest.Amount, 
-                    DateTime.Now, 
-                    response is SuccessfulPaymentResponse));
+            if (payment.Rejected)
+                return new BadRequestResult();
+
+            await storePaymentCommand.StorePaymentAsync(payment.Id, validation.Transaction);
 
             return new CreatedResult(
-                response.Id.ToString(), 
-                new PaymentCreatedResponse(){Id = response.Id});
+                payment.Id.ToString(),
+                payment.ToResponse());
         }
 
         [HttpGet("v1/payments/{id}")]
         public async Task<IActionResult> GetPaymentRecord([FromRoute] Guid id)
         {
-            return new OkObjectResult(await transactionQuery.GetPayment(id));
+            var transaction = await transactionQuery.GetPayment(id);
+
+            return new OkObjectResult(new 
+            { 
+                CardNumber = transaction.Card.ToString(), 
+                Timestamp = transaction.Timestamp, 
+                Amount = transaction.Amount,
+                Success = transaction.Success 
+            });
         }
     }
 }

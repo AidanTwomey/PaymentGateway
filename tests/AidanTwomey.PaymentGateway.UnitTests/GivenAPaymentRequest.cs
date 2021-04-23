@@ -37,8 +37,17 @@ namespace AidanTwomey.PaymentGateway.UnitTests
             validator.Validate(request, asOf).ShouldBeOfType<InvalidPayment>();
         }
 
+        [Fact]
+        public void And_Payment_Amount_Is_Zero_Then_Validation_Returns_ValidPayment()
+        {
+            new PaymentValidator()
+                .Validate(new MakePaymentRequest() { Card = new(ValidCardNumber, 11, 2022), Amount = 0m }, asOf)
+                .ShouldBeOfType<InvalidPayment>();
+        }
+
         private static (MakePaymentRequest, PaymentValidator) InitialiseRequest(string cardNumber, int month, int year) =>
-            (new MakePaymentRequest() { Card = new(cardNumber, month, year) }, new PaymentValidator());
+            (new MakePaymentRequest() { Card = new(cardNumber, month, year), Amount = 0.99m }, 
+            new PaymentValidator());
         
     }
 }

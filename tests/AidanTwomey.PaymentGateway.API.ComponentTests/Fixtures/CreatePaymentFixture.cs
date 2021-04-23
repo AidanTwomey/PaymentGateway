@@ -11,6 +11,7 @@ using System.Runtime.Caching;
 using AidanTwomey.PaymentsGateway.Domain;
 using AidanTwomey.PaymentsGateway.API.Query;
 using Newtonsoft.Json;
+using AidanTwomey.PaymentsGateway.API.Payments;
 
 namespace AidanTwomey.PaymentGateway.API.ComponentTests.Fixtures
 {
@@ -37,6 +38,13 @@ namespace AidanTwomey.PaymentGateway.API.ComponentTests.Fixtures
                 return objectCache;
             });
             collection.AddTransient<IPaymentValidator, PaymentValidator>();
+            collection.AddTransient<IPaymentService, PaymentService>();
+            collection.AddTransient<IBank>(_ =>
+            {
+                IBank bank = Substitute.For<IBank>();
+                bank.CreatePayment(Arg.Any<Payment>()).Returns(Task.FromResult(new ProcessedPayment(){success = true}));
+                return bank;
+            });
             
         }
 
@@ -79,12 +87,19 @@ namespace AidanTwomey.PaymentGateway.API.ComponentTests.Fixtures
             LastResponse.IsSuccessStatusCode.ShouldBeTrue();
         }
 
+        internal void ThenABadRequestResponseIsReturned()
+        {
+            LastResponse.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
+        }
+
         internal async Task AndTheTransactionWasASuccess()
         {
             var body = await LastResponse.Content.ReadAsStringAsync();
-            var response = JsonConvert.DeserializeObject<PaymentTransaction>(body);
+            
+            var transaction = new { Success = default(bool) };
+            transaction = JsonConvert.DeserializeAnonymousType(body, transaction);
 
-            response.Success.ShouldBeTrue();
+            transaction.Success.ShouldBeTrue();
         }
     }
 }

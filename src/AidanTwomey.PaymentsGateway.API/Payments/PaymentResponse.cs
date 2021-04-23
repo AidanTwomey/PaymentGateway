@@ -1,12 +1,18 @@
 using System;
+using AidanTwomey.PaymentGateway.API.Model;
 
 namespace AidanTwomey.PaymentsGateway.API.Payments
 {
     public class SuccessfulPaymentResponse : PaymentResponse
     {
-        public SuccessfulPaymentResponse(Guid id) : base(id)
+        public SuccessfulPaymentResponse(Guid id, Card card) : base(id)
         {
+            this.Card = card;
         }
+
+        public Card Card { get; private set;}
+
+        public override bool Rejected => false;
     }
 
     public class FailedPaymentResponse : PaymentResponse
@@ -14,6 +20,8 @@ namespace AidanTwomey.PaymentsGateway.API.Payments
         public FailedPaymentResponse(Guid id) : base(id)
         {
         }
+
+        public override bool Rejected => true;
     }
 
     public abstract class PaymentResponse
@@ -24,5 +32,7 @@ namespace AidanTwomey.PaymentsGateway.API.Payments
         }
 
         public readonly Guid Id;
+
+        public abstract bool Rejected { get;}
     }
 }

@@ -8,6 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Runtime.Caching;
 using AidanTwomey.PaymentsGateway.API.Query;
+using System;
+using Refit;
 
 namespace AidanTwomey.PaymentsGateway.API
 {
@@ -43,6 +45,11 @@ namespace AidanTwomey.PaymentsGateway.API
             services.AddSingleton<IStorePaymentCommand, InMemoryStorePaymentCommand>();
             services.AddSingleton<IPaymentTransactionQuery, InMemoryPaymentTransactionQuery>();
             services.AddSingleton<IPaymentService, PaymentService>();
+
+            services
+                .AddRefitClient<IBank>()
+                .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://sng4g5vavg.execute-api.eu-west-2.amazonaws.com/default/"))
+                ;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

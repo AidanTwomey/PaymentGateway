@@ -3,8 +3,11 @@ using System.Runtime.Caching;
 using System.Threading.Tasks;
 using AidanTwomey.PaymentGateway.API.Model;
 using AidanTwomey.PaymentsGateway.API.Command;
+using AidanTwomey.PaymentsGateway.API.Payments;
+using AidanTwomey.PaymentsGateway.API.Validation;
 using AidanTwomey.PaymentsGateway.Domain;
 using NSubstitute;
+using Shouldly;
 using Xunit;
 
 namespace AidanTwomey.PaymentGateway.UnitTests
@@ -31,6 +34,22 @@ namespace AidanTwomey.PaymentGateway.UnitTests
                 );
 
             cache.Received(1).Add(transactionId, transaction, Arg.Any<CacheItemPolicy>(), Arg.Any<string>());
+        }
+
+        [Fact]
+        public void When_Map_ToResponse_Then_CardDetailIsMasked()
+        {
+            Guid id = Guid.NewGuid();
+
+            const string Number = "4485710512780511";
+
+            var response = new SuccessfulPaymentResponse(id, new Card(Number, 11, 2023)) {};
+
+            var paymentCreatedResponse = response.ToResponse();
+
+            paymentCreatedResponse.Id.ShouldBe(id);
+            paymentCreatedResponse.CardNumber.ShouldBe("************0511");
+            
         }
     }
 }

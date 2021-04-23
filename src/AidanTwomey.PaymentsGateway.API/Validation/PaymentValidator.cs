@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using AidanTwomey.PaymentGateway.API.Model;
 
 namespace AidanTwomey.PaymentsGateway.API.Validation
@@ -14,6 +13,7 @@ namespace AidanTwomey.PaymentsGateway.API.Validation
             return RunRules(
                 CardValidationRules.NumberIsCorrectLength,
                 CardValidationRules.NumberHasOnlyDigits,
+                PaymentValidationRules.AmountIsGreaterThanZero,
                 ExpiryIsInFuture
             );
 
@@ -28,7 +28,7 @@ namespace AidanTwomey.PaymentsGateway.API.Validation
                         return new InvalidPayment();
                 }
 
-                return new ValidPayment();
+                return new ValidPayment(request);
             }
         }
     }

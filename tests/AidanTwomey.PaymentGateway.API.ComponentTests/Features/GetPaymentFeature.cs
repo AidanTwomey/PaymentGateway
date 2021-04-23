@@ -7,7 +7,7 @@ namespace AidanTwomey.PaymentGateway.API.ComponentTests.Features
     {
         [Scenario]
         [CustomInlineAutoData("4716144209705113")]        
-        public void CreateCategoryShouldSucceed(string card, CreatePaymentFixture fixture)
+        public void GetPaymentShouldSucceed(string card, CreatePaymentFixture fixture)
         {
             "Given a payment exists".x(fixture.GivenAPaymentExists);
             "When we get the Payments API".x(fixture.WhenThePaymentIsRetrieved);

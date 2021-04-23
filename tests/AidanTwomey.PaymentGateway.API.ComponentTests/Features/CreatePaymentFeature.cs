@@ -8,11 +8,20 @@ namespace AidanTwomey.PaymentGateway.API.ComponentTests.Features
 
         [Scenario]
         [CustomInlineAutoData("4716144209705113")]        
-        public void CreateCategoryShouldSucceed(string card, CreatePaymentFixture fixture)
+        public void CreatePaymentShouldSucceed(string card, CreatePaymentFixture fixture)
         {
             "Given a payment with card number {card}".x(() => fixture.GivenAPaymentWithCard(card));
             "When a new payment is submitted".x(fixture.WhenThePaymentIsSubmitted);
             "Then a successful response is returned".x(fixture.ThenASuccessfulResponseIsReturned);
+        }
+
+        [Scenario]
+        [CustomInlineAutoData("abc123")]        
+        public void CreatePaymentShouldFail(string card, CreatePaymentFixture fixture)
+        {
+            "Given a payment with card number {card}".x(() => fixture.GivenAPaymentWithCard(card));
+            "When a new payment is submitted".x(fixture.WhenThePaymentIsSubmitted);
+            "Then a bad request response is returned".x(fixture.ThenABadRequestResponseIsReturned);
         }
     }
 }
