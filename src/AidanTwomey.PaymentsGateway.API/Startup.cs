@@ -50,11 +50,9 @@ namespace AidanTwomey.PaymentsGateway.API
 
             services
                 .AddRefitClient<IBank>()
-                .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://sng4g5vavg.execute-api.eu-west-2.amazonaws.com/default/"))
-                ;
+                .ConfigureHttpClient(c => c.BaseAddress = new Uri(Configuration["BankUri"]));
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())

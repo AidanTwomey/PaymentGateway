@@ -42,7 +42,7 @@ namespace AidanTwomey.Paymentsgateway.API.Controllers
             if (validation is InvalidPayment)
                 return new BadRequestResult();
 
-            var payment = await paymentService.MakePayment(validation.ToPayment());
+            var payment = await paymentService.MakePayment(validation.ToPayment(), validation.Transaction.Card);
 
             if (payment.Rejected)
                 return new BadRequestResult();

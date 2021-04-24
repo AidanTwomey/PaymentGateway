@@ -18,7 +18,7 @@ namespace AidanTwomey.PaymentGateway.UnitTests
             string number, int month, int year, string cvv
         )
         {
-            var (request, validator) = InitialiseRequest(number, month, year);
+            var (request, validator) = PaymentInitialiser.InitialiseRequest(number, month, year, 0.99m);
 
             validator.Validate(request, asOf).ShouldBeOfType<ValidPayment>();
         }
@@ -32,7 +32,7 @@ namespace AidanTwomey.PaymentGateway.UnitTests
             string number, int month, int year, string cvv
         )
         {
-            var (request, validator) = InitialiseRequest(number, month, year);
+            var (request, validator) = PaymentInitialiser.InitialiseRequest(number, month, year, 0.99m);
 
             validator.Validate(request, asOf).ShouldBeOfType<InvalidPayment>();
         }
@@ -44,10 +44,5 @@ namespace AidanTwomey.PaymentGateway.UnitTests
                 .Validate(new MakePaymentRequest() { Card = new(ValidCardNumber, 11, 2022), Amount = 0m }, asOf)
                 .ShouldBeOfType<InvalidPayment>();
         }
-
-        private static (MakePaymentRequest, PaymentValidator) InitialiseRequest(string cardNumber, int month, int year) =>
-            (new MakePaymentRequest() { Card = new(cardNumber, month, year), Amount = 0.99m }, 
-            new PaymentValidator());
-        
     }
 }

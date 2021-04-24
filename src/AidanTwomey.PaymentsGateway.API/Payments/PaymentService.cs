@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using AidanTwomey.PaymentGateway.API.Model;
 
 namespace AidanTwomey.PaymentsGateway.API.Payments
 {
@@ -12,13 +13,21 @@ namespace AidanTwomey.PaymentsGateway.API.Payments
             this.bank = bank;
         }
 
-        public async Task<PaymentResponse> MakePayment(Payment request)
+        public async Task<PaymentResponse> MakePayment(Payment payment, Card card)
         {
-            var payment = await bank.CreatePayment(request);
-
-            return payment.success
-                ? new SuccessfulPaymentResponse(Guid.NewGuid(), request.Card)
-                : new FailedPaymentResponse(Guid.Empty) as PaymentResponse;
+            try
+            {
+                var bankPayment = await bank.CreatePayment(payment);
+                return new SuccessfulPaymentResponse(Guid.NewGuid(), card);
+            }
+            catch (Refit.ApiException bankRejects)
+            {
+                return new FailedPaymentResponse(Guid.Empty);
+            }
+            catch
+            {
+                throw;
+            }
         }
     }
 }

@@ -22,3 +22,6 @@ An API for demonstrating payments in dotnet core. See the Swagger endpoint at `/
   "currency": "USD"
 }
 ```
+
+## Calling The Bank
+This implementation assumes a bank that is callable via a REST API with a resource `/payment` which returns a 200 response should the payment be completed and a 400 if the payment is rejected. The stub implementation for this demo is a simple AWS Lambda behind an API Gateway. The gateway performs some simple validation, including a paymant limit of 100 MOngolian Spufniks. In order to swap this stub for the actual bank, the base url in appsettings.json should be updated.

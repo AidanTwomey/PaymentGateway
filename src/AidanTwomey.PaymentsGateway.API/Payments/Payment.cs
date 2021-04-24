@@ -4,6 +4,6 @@ namespace AidanTwomey.PaymentsGateway.API.Payments
 {
     public class Payment
     {
-        public Card Card { get; set;}
+        public decimal Amount { get; set;}
     }
 }
