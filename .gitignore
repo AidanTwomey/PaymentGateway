@@ -29,7 +29,8 @@ test-local*
 **/*.opencover.xml
 **/.sonar*
 **/.store
-
+**/.vscode
+**/.DS_Store
 
 # production
 **/.next
