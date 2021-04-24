@@ -6,7 +6,18 @@ An API for demonstrating payments in dotnet core. See the Swagger endpoint at `/
 
 ## Deployed Version
 
-A version of the API has been deployed to a publicly available [API](http://aidant-payment-gateway.northeurope.azurecontainer.io/v1/payments) hosted in an Azure Container instance. This can be called 
+A version of the API has been deployed to a publicly available [API](http://aidant-payment-gateway.northeurope.azurecontainer.io/v1/payments) hosted in an Azure Container instance. This can be called using the examples as follows.
+
+## Local Version
+
+Should you wish to run locally, you can create a docker image from the command line:
+
+```
+docker build . -t payment-gateway
+docker run -d -p 8080:80 payment-gateway
+```
+
+You should then be able to reach the API running on localhost, for example sending a POST to `http://localhost:8080/v1/payments`
 
 ## Example 
 
