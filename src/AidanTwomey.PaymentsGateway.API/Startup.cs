@@ -13,6 +13,7 @@ using Refit;
 
 namespace AidanTwomey.PaymentsGateway.API
 {
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -45,12 +46,14 @@ namespace AidanTwomey.PaymentsGateway.API
             services.AddSingleton<IStorePaymentCommand, InMemoryStorePaymentCommand>();
             services.AddSingleton<IPaymentTransactionQuery, InMemoryPaymentTransactionQuery>();
             services.AddSingleton<IPaymentService, PaymentService>();
+            services.AddTransient<ApiKeyHeaderHandler>();
 
             services.AddSwaggerGen();
 
             services
-                .AddRefitClient<IBank>()
-                .ConfigureHttpClient(c => c.BaseAddress = new Uri(Configuration["BankUri"]));
+                .AddRefitClient<IBank>(p => new RefitSettings())
+                .ConfigureHttpClient(c => c.BaseAddress = new Uri(Configuration["BankUri"]))
+                .AddHttpMessageHandler<ApiKeyHeaderHandler>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -1,0 +1,139 @@
+{
+	"info": {
+		"_postman_id": "a3a635da-5fbf-47f8-93c2-33310affd448",
+		"name": "CheckoutPaymentGateway",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Make Payment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"read id\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.environment.set(\"payment_id\", jsonData.id);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"card\": {\n      \"number\": \"4916712854785842\",\n      \"expiryMonth\": 11,\n      \"expiryYear\": 2022,\n      \"cvv\": \"635\"\n  },\n  \"amount\": 17.89,\n  \"currency\": \"USD\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://aidant-payment-gateway.northeurope.azurecontainer.io/v1/payments",
+					"protocol": "http",
+					"host": [
+						"aidant-payment-gateway",
+						"northeurope",
+						"azurecontainer",
+						"io"
+					],
+					"path": [
+						"v1",
+						"payments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Retrieve Payment",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://aidant-payment-gateway.northeurope.azurecontainer.io/v1/payments/{{payment_id}}",
+					"protocol": "http",
+					"host": [
+						"aidant-payment-gateway",
+						"northeurope",
+						"azurecontainer",
+						"io"
+					],
+					"path": [
+						"v1",
+						"payments",
+						"{{payment_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Bank Payments Stub",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"amount\": 29.99\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://sng4g5vavg.execute-api.eu-west-2.amazonaws.com/default/payment",
+					"protocol": "https",
+					"host": [
+						"sng4g5vavg",
+						"execute-api",
+						"eu-west-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"default",
+						"payment"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
