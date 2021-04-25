@@ -1,6 +1,9 @@
 using System;
+using System.Threading.Tasks;
 using AidanTwomey.PaymentGateway.API.Model;
+using AidanTwomey.PaymentsGateway.API.Payments;
 using AidanTwomey.PaymentsGateway.API.Validation;
+using NSubstitute;
 using Shouldly;
 using Xunit;
 
@@ -43,6 +46,24 @@ namespace AidanTwomey.PaymentGateway.UnitTests
             new PaymentValidator()
                 .Validate(new MakePaymentRequest() { Card = new(ValidCardNumber, 11, 2022), Amount = 0m }, asOf)
                 .ShouldBeOfType<InvalidPayment>();
+        }
+
+        [Fact]
+        public async Task And_Payment_Is_Validated_Then_MakePayment_Returns_ValidPaymentAsync()
+        {
+            Payment payment = new Payment();
+
+            IBank bank = Substitute.For<IBank>();
+
+            bank
+                .CreatePayment(payment)
+                .Returns(Task.FromResult(new ProcessedPayment(){success = true} ));
+            
+            var service = new PaymentService(bank);
+
+            var transaction = await service.MakePayment(payment, new Card(ValidCardNumber, 9,2025));
+
+            transaction.Rejected.ShouldBeFalse();
         }
     }
 }

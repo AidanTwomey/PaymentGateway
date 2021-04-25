@@ -6,7 +6,7 @@ An API for demonstrating payments in dotnet core. See the Swagger endpoint at `/
 
 ## Deployed Version
 
-A version of the API has been deployed to a publicly available [API](http://aidant-payment-gateway.northeurope.azurecontainer.io/v1/payments) hosted in an Azure Container instance. This can be called using the examples as follows.
+A version of the API has been deployed using Github Actions to a publicly available [API](http://aidant-payment-gateway.northeurope.azurecontainer.io/v1/payments) hosted in an Azure Container instance. This can be called using the examples as follows.
 
 ## Local Version
 
@@ -49,3 +49,6 @@ Note that at the end of the month the Azure account may be unavailable because t
 This implementation assumes a bank that is callable via a REST API with a resource `/payment` which returns a 200 response should the payment be completed and a 400 if the payment is rejected. The stub implementation for this demo is a simple AWS Lambda behind an API Gateway. The gateway performs some simple validation, including a paymant limit of 100 Syldavian Spufniks. In order to swap this stub for the actual bank, the base url in appsettings.json should be updated.
 
 Note that the bank requires an API key to be provided in the `x-api-key` header. This can be configured in the `appsettings.json` file.
+
+## Storing Card Information
+To store the card information we woud usually place the request on a queue (such as SQS) so that the card could be saved in a data store (probably a document store such as Dynamo or Cosmos DB) without delaying the payment API. This way we could also better guarantee that the card will be saved even if the data store is currently unavailable. For now we have implemented the store as a memory cache with a TTL of 1 hour. This would be an extension if we were continuing to develop this API.
