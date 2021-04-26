@@ -17,9 +17,11 @@ namespace AidanTwomey.PaymentGateway.API.ComponentTests.Fixtures
 {
     public class CreatePaymentFixture : ApiFixture<Startup>
     {
-        private const string TransactionId = "1261b691-f8aa-4e84-900f-9cdc0e2c5c0c";
+        private const string ValidTransactionId = "1261b691-f8aa-4e84-900f-9cdc0e2c5c0c";
+        private const string InvalidTransactionId = "b78796c3-08fc-4a46-9acb-612cc5d8fd46";
         readonly Guid userRestaurantId = Guid.Parse("2AA18D86-1A4C-4305-95A7-912C7C0FC5E1");
         private string cardNumber;
+        private string transactionId;
 
         public CreatePaymentFixture()
         {
@@ -32,9 +34,15 @@ namespace AidanTwomey.PaymentGateway.API.ComponentTests.Fixtures
             collection.AddTransient(IoC =>
             {
                 ObjectCache objectCache = Substitute.For<ObjectCache>();
+                
                 objectCache
-                    .Get(TransactionId, Arg.Any<string>())
+                    .Get(ValidTransactionId, Arg.Any<string>())
                     .Returns(new PaymentTransaction(new Card("4916690086480301", 12, 2022), 19.99m, DateTime.Now, true ));
+                
+                objectCache
+                    .Get(InvalidTransactionId, Arg.Any<string>())
+                    .Returns(null);
+                
                 return objectCache;
             });
             collection.AddTransient<IPaymentValidator, PaymentValidator>();
@@ -48,6 +56,7 @@ namespace AidanTwomey.PaymentGateway.API.ComponentTests.Fixtures
             
         }
 
+
         /****** GIVEN ******************************************************/
 
         internal void GivenAPaymentWithCard(string card)
@@ -57,6 +66,12 @@ namespace AidanTwomey.PaymentGateway.API.ComponentTests.Fixtures
 
         internal void GivenAPaymentExists()
         {
+            this.transactionId = ValidTransactionId;
+        }
+
+        internal void GivenAPaymentDoesNotExist()
+        {
+            this.transactionId = InvalidTransactionId;
         }
 
         /****** WHEN *******************************************************/
@@ -72,7 +87,7 @@ namespace AidanTwomey.PaymentGateway.API.ComponentTests.Fixtures
 
         internal async Task<HttpResponseMessage> WhenThePaymentIsRetrieved()
         {
-            return await SendAsync(HttpMethod.Get, $"/v1/payments/{TransactionId}");
+            return await SendAsync(HttpMethod.Get, $"/v1/payments/{transactionId}");
         }
 
         public async Task<HttpResponseMessage> CreatePayment(MakePaymentRequest payment)
@@ -85,6 +100,11 @@ namespace AidanTwomey.PaymentGateway.API.ComponentTests.Fixtures
         internal void ThenASuccessfulResponseIsReturned()
         {
             LastResponse.IsSuccessStatusCode.ShouldBeTrue();
+        }
+
+        internal void ThenANotFoundResponseIsReturned()
+        {
+            LastResponse.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
         }
 
         internal void ThenABadRequestResponseIsReturned()

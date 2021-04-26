@@ -59,12 +59,15 @@ namespace AidanTwomey.Paymentsgateway.API.Controllers
         {
             var transaction = await transactionQuery.GetPayment(id);
 
-            return new OkObjectResult(new 
-            { 
-                CardNumber = transaction.Card.ToString(), 
-                Timestamp = transaction.Timestamp, 
+            if (transaction is NotFoundTransaction)
+                return new NotFoundResult();
+
+            return new OkObjectResult(new
+            {
+                CardNumber = transaction.Card.ToString(),
+                Timestamp = transaction.Timestamp,
                 Amount = transaction.Amount,
-                Success = transaction.Success 
+                Success = transaction.Success
             });
         }
     }

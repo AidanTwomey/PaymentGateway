@@ -16,9 +16,13 @@ namespace AidanTwomey.PaymentsGateway.API.Query
 
         public Task<PaymentTransaction> GetPayment(Guid id)
         {
-            return Task.FromResult(
-                cache.Get(id.ToString()) as PaymentTransaction
-            );
+            object payment = cache.Get(id.ToString());
+
+            var transaction = (payment == null)
+                ? new NotFoundTransaction()
+                : payment as PaymentTransaction;
+            
+            return Task.FromResult(transaction);
         }
     }
 }

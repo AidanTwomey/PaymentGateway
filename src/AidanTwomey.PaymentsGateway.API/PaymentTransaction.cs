@@ -3,6 +3,12 @@ using AidanTwomey.PaymentGateway.API.Model;
 
 namespace AidanTwomey.PaymentsGateway.Domain
 {
+    public record NotFoundTransaction : PaymentTransaction
+    {
+        public NotFoundTransaction() : base(null, default(decimal), DateTime.Now, false)
+        {
+        }
+    }
     public record PaymentTransaction
     {
         public PaymentTransaction(Card card, decimal amount, DateTime timestamp, bool success)
